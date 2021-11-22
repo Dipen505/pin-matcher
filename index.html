@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input class="form-control" type="text" placeholder="generated pin" id="generated-pin">
+                    <button class="generate-btn" onclick="generatePin()">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input class="form-control" type="text" id="digit-field">
+                    <div class="numbers">
+                        <div class="calc-body" onclick="typedDigit()">
+                            <div class="calc-button-row">
+                                <div class="button">7</div>
+                                <div class="button">8</div>
+                                <div class="button">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button">4</div>
+                                <div class="button">5</div>
+                                <div class="button">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button">1</div>
+                                <div class="button">2</div>
+                                <div class="button">3</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button">AC</div>
+                                <div class="button">0</div>
+                                <div class="button">C</div>
+                            </div>
+                            <div>
+                                <button type="submit" onclick="pinMatcher()" class="submit-btn">Submit</button>
+                                <p class="action-left"><span id="tried-count">3</span> try left</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="notify-section">
+                    <p class="notify" id="incorrect-pin">❌ Pin Didn't Match, Please try again</p>
+                    <p class="notify" id="correct-pin">✅ Pin Matched... Secret door is opening for you</p>
+                </div>
+            </div>
+            <script>
+                //Generate pin function
+                const generatePin = () => {
+                    const randomNum = (Math.random() * 10000 + "").split(".")[0];
+                    if (randomNum.length === 4) {
+                        const generatedNum = document.querySelector("#generated-pin");
+                        generatedNum.value = randomNum;
+                    }
+                }
+                //typed digit function
+                const typedDigit = () => {
+                    const digit = event.target.innerText;
+                    if (isNaN(digit)) {
+                        if (digit === "C") {
+                            document.querySelector("#digit-field").value = "";
+                        }
+                    }
+                    else {
+                        const typeDigit = document.querySelector("#digit-field");
+                        typeDigit.value = typeDigit.value + digit;
+                    }
+                }
+                // pin matcher function
+                const pinMatcher = () => {
+                    const triedCount = document.querySelector('#tried-count').innerText;
+                    const triedCountNum = parseFloat(triedCount);
+                    let leftCount = 0;
+                    const generatedNum = document.querySelector('#generated-pin').value;
+                    const typedDigit = document.querySelector('#digit-field').value;
+                    if (generatedNum === typedDigit) {
+                        displayNotification("block", "none");
+                    }
+                    else {
+                        if (triedCountNum > 0) {
+                            leftCount = triedCountNum - 1;
+                        }
+                        displayNotification('none', 'block');
+                        document.querySelector('#tried-count').innerText = leftCount;
+                    }
+                }
+                //showing notification function
+                const displayNotification = (block, none) => {
+                    const correctPin = document.querySelector('#correct-pin');
+                    correctPin.style.display = block;
+                    const inCorrectPin = document.querySelector('#incorrect-pin');
+                    inCorrectPin.style.display = none;
+                }
+            </script>
+</body>
+
+</html>
